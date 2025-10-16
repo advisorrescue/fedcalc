@@ -8,22 +8,27 @@
     "start": "next start",
     "lint": "next lint || true"
   },
-  "dependencies": {
-  "next": "14.2.x",
-  "react": "18.2.0",
-  "react-dom": "18.2.0",
-  "lucide-react": "...",
-  "recharts": "...",
-  "@radix-ui/react-select": "...",
-  "@radix-ui/react-switch": "...",
-  "@radix-ui/react-tabs": "...",
-  "@radix-ui/react-dialog": "...",
-  "clsx": "...",
-  "tailwind-merge": "..."
-},
-"devDependencies": {
-  "tailwindcss": "...",
-  "postcss": "...",
-  "autoprefixer": "..."
-}
+ "dependencies": {
+    "next": "14.2.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "lucide-react": "0.424.0",
+    "recharts": "2.10.3",
+    "@radix-ui/react-select": "2.0.0",
+    "@radix-ui/react-switch": "1.0.3",
+    "@radix-ui/react-tabs": "1.0.4",
+    "@radix-ui/react-dialog": "1.0.5",
+    "clsx": "2.0.0",
+    "tailwind-merge": "2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5",
+    "postcss": "8.4.38",
+    "autoprefixer": "10.4.19",
+    "tailwindcss": "3.4.4",
+    "@types/node": "20.11.30",
+    "@types/react": "18.2.74",
+    "@types/react-dom": "18.2.24",
+    "eslint": "8.57.0"
+  }
 }
