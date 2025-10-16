@@ -528,19 +528,37 @@ function InstrumentCard({ title, subtitle, children, include = true, onToggle }:
 }
 
 function Num({ label, value, onChange, step = 0.01, prefix, percent }: { label: string; value: number; onChange: (v: number) => void; step?: number; prefix?: string; percent?: boolean }) {
-  const [text, setText] = React.useState<string>(() => percent ? (value * 100).toString() : value.toString());
-  React.useEffect(() => { setText(percent ? (value * 100).toString() : value.toString()); }, [value, percent]);
+  // ✅ initialize with two decimals if percent
+  const [text, setText] = React.useState<string>(() => percent ? (value * 100).toFixed(2) : value.toString());
+
+  // ✅ keep in sync, rounded
+  React.useEffect(() => {
+    setText(percent ? (value * 100).toFixed(2) : value.toString());
+  }, [value, percent]);
+
   const parse = (s: string) => {
     let v = parseFloat(s || "0");
     if (Number.isNaN(v)) v = 0;
     return percent ? v / 100 : v;
   };
+
   return (
     <div className="space-y-1">
       <Label className="text-xs">{label}</Label>
       <div className="flex items-center gap-1">
         {prefix && <span className="text-sm text-gray-500">{prefix}</span>}
-        <Input value={text} onChange={(e) => setText(e.target.value)} onBlur={() => onChange(parse(text))} type="number" step={step} />
+        <Input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onBlur={() => {
+            const v = parse(text);
+            onChange(v);
+            // ✅ reformat rounded after losing focus
+            setText(percent ? (v * 100).toFixed(2) : v.toString());
+          }}
+          type="number"
+          step={step}
+        />
         {percent && <span className="text-sm text-gray-500">%</span>}
       </div>
     </div>
