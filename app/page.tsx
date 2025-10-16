@@ -11,6 +11,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { RefreshCw, Printer, Settings, ArrowRight } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
+const [myga, setMYGA] = useState<{ amount: number; rate: number; term: MygaTerm; include: boolean }>({
+  amount: 150000,
+  rate: ROF_MYGA_RATES[0][5],
+  term: 5,
+  include: true,
+});
+const [mygaRiders, setMygaRiders] = useState<0 | 1 | 2>(0);
+
+React.useEffect(() => {
+  setMYGA((s) => ({ ...s, rate: ROF_MYGA_RATES[mygaRiders][s.term] }));
+}, [mygaRiders, myga.term]);
+
 const BEFORE_COLOR = "#6d9f9b";
 const AFTER_COLOR = "#f4a259";
 const BOOKING_URL = "https://www.advisorrescue.net/appointment";
@@ -66,7 +78,7 @@ export default function Page() {
     const p = STATE_PRESETS[stateCode];
     setMM((s) => ({ ...s, apy: p.mm_apy }));
     setCDs((rows) => rows.map((r) => ({ ...r, apy: p.cd_1y })));
-    setMYGA((s) => ({ ...s, rate: p.myga_5y }));
+    setMYGA((s) => ({ ...s, rate: ROF_MYGA_RATES[mygaRiders][s.term] }));
     setFIA((s) => ({ ...s, cap: p.fia_cap, par: p.fia_par }));
     setSPIA((s) => ({ ...s, payoutFactor: p.spia_factor_65 }));
   };
@@ -229,12 +241,39 @@ export default function Page() {
           </InstrumentCard>
 
           <InstrumentCard title="MYGA (Multi-Year Guaranteed Annuity)" include={myga.include} onToggle={(v) => setMYGA({ ...myga, include: v })}>
-            <div className="grid grid-cols-3 gap-3">
-              <Num label="Amount" value={myga.amount} onChange={(v) => setMYGA({ ...myga, amount: v })} prefix="$" />
-              <Num label="Rate" value={myga.rate} onChange={(v) => setMYGA({ ...myga, rate: v })} percent />
-              <Num label="Term (yrs)" value={myga.term} onChange={(v) => setMYGA({ ...myga, term: v })} step={1} />
-            </div>
-          </InstrumentCard>
+  <div className="grid grid-cols-3 gap-3">
+    <Num label="Amount" value={myga.amount} onChange={(v) => setMYGA({ ...myga, amount: v })} prefix="$" />
+    <div className="space-y-1">
+      <Label className="text-xs">Term (yrs)</Label>
+      <Select value={String(myga.term)} onValueChange={(v) => setMYGA({ ...myga, term: Number(v) as MygaTerm })}>
+        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          <SelectItem value="3">3</SelectItem>
+          <SelectItem value="5">5</SelectItem>
+          <SelectItem value="7">7</SelectItem>
+          <SelectItem value="10">10</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+    <div className="space-y-1">
+      <Label className="text-xs">Optional Riders</Label>
+      <Select value={String(mygaRiders)} onValueChange={(v) => setMygaRiders(Number(v) as 0 | 1 | 2)}>
+        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          <SelectItem value="0">None</SelectItem>
+          <SelectItem value="1">One</SelectItem>
+          <SelectItem value="2">Two</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  </div>
+  <div className="mt-2 text-xs text-gray-600">
+    Carrier table (ROF DirectGrowth): {myga.term}y • {mygaRiders === 0 ? "no riders" : mygaRiders === 1 ? "one rider" : "two riders"} • {(ROF_MYGA_RATES[mygaRiders][myga.term] * 100).toFixed(2)}%
+  </div>
+  <div className="grid grid-cols-3 gap-3 mt-2">
+    <Num label="Rate (auto from table)" value={myga.rate} onChange={(v) => setMYGA({ ...myga, rate: v })} percent />
+  </div>
+</InstrumentCard>
 
           <InstrumentCard title="FIA (Fixed Indexed Annuity) – Simplified" include={fia.include} onToggle={(v) => setFIA({ ...fia, include: v })} subtitle="Illustrative expected credit and income proxy; caps/pars can change.">
             <div className="grid grid-cols-3 gap-3">
