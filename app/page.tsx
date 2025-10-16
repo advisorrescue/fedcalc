@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 
 const BEFORE_COLOR = "#6d9f9b";
 const AFTER_COLOR = "#f4a259";
-const BOOKING_URL = "https://www.advisorrescue.net/appointment";
+const BOOKING_URL = "https://www.planliferight.com/consultation";
 
 const STATE_PRESETS: Record<string, { mm_apy: number; cd_1y: number; myga_3y: number; myga_5y: number; fia_cap: number; fia_par: number; spia_factor_65: number; }> = {
   FL: { mm_apy: 0.045, cd_1y: 0.052, myga_3y: 0.051, myga_5y: 0.053, fia_cap: 0.06, fia_par: 1.75, spia_factor_65: 0.072 },
