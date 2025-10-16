@@ -76,6 +76,7 @@ React.useEffect(() => {
   const [leadEmail, setLeadEmail] = useState<string>("");
   const [leadPhone, setLeadPhone] = useState<string>("");
   const [leadConsent, setLeadConsent] = useState<boolean>(true);
+  const [uiError, setUiError] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
 
   const deltaBps = useMemo(() => (scenario === "custom" ? customDeltaBps : parseInt(scenario, 10)), [scenario, customDeltaBps]);
   const deltaY = useMemo(() => deltaBps / 10000, [deltaBps]);
