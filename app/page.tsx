@@ -2,30 +2,15 @@
 import React, { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { RefreshCw, Printer, Settings, ArrowRight } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { RefreshCw, Printer, Settings, ArrowRight } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
-
-const ROF_MYGA_RATES = {
-  0: { 3: 0.0565, 5: 0.0600, 7: 0.0600, 10: 0.0600 },
-  1: { 3: 0.0555, 5: 0.0590, 7: 0.0590, 10: 0.0590 },
-  2: { 3: 0.0545, 5: 0.0580, 7: 0.0580, 10: 0.0580 },
-} as const;
-
-type MygaTerm = 3 | 5 | 7 | 10;
-
-const [myga, setMYGA] = useState<{ amount: number; rate: number; term: MygaTerm; include: boolean }>({
-  amount: 150000,
-  rate: ROF_MYGA_RATES[0][5],
-  term: 5,
-  include: true,
-});
-const [mygaRiders, setMygaRiders] = useState<0 | 1 | 2>(0);
 
 React.useEffect(() => {
   setMYGA((s) => ({ ...s, rate: ROF_MYGA_RATES[mygaRiders][s.term] }));
@@ -57,7 +42,14 @@ interface SPIAInput { premium: number; age: number; payoutFactor: number; includ
 interface HELOCInput { balance: number; margin: number; include: boolean; }
 
 export default function Page() {
-  const [stateCode, setStateCode] = useState<string>("FL");  
+  const [stateCode, setStateCode] = useState<string>("FL");
+  const ROF_MYGA_RATES = {
+  0: { 3: 0.0565, 5: 0.0600, 7: 0.0600, 10: 0.0600 },
+  1: { 3: 0.0555, 5: 0.0590, 7: 0.0590, 10: 0.0590 },
+  2: { 3: 0.0545, 5: 0.0580, 7: 0.0580, 10: 0.0580 },
+} as const;
+
+type MygaTerm = 3 | 5 | 7 | 10;
   const [scenario, setScenario] = useState<ScenarioKey>("-50");
   const [customDeltaBps, setCustomDeltaBps] = useState<number>(-50);
   const [showReal, setShowReal] = useState<boolean>(false);
