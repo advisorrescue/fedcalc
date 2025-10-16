@@ -420,30 +420,59 @@ React.useEffect(() => {
           </div>
           <DialogFooter className="mt-4 flex gap-2 justify-end">
             <Button variant="outline" onClick={() => setLeadOpen(false)}>Cancel</Button>
-            <Button onClick={() => {
-              const params = new URLSearchParams({
-                utm_source: 'fedcalc',
-                utm_medium: 'app',
-                utm_campaign: 'guaranteed-rates',
-                state: stateCode,
-                delta_bps: String(deltaBps),
-                est_delta_income: String(Math.round(delta)),
-                product: leadProduct,
-                name: leadName,
-                email: leadEmail,
-                phone: leadPhone,
-              });
-              const url = `${BOOKING_URL}?${params.toString()}`;
-              window.open(url, '_blank');
-              setLeadOpen(false);
-            }} className="gap-2">
-              Continue to Booking <ArrowRight className="h-4 w-4"/>
-            </Button>
+            <Button
+  onClick={() => {
+  if (!leadName.trim() || !leadEmail.trim()) {
+    setUiError({ open: true, message: "Please fill out your name and email before continuing." });
+    return;
+  }
+  if (!stateCode.trim()) {
+    setUiError({ open: true, message: "Please select your state before continuing." });
+    return;
+  }
+  if (!leadConsent) {
+    setUiError({ open: true, message: "You must agree to be contacted before continuing." });
+    return;
+  }
+
+  const params = new URLSearchParams({
+    utm_source: 'fedcalc',
+    utm_medium: 'app',
+    utm_campaign: 'guaranteed-rates',
+    state: stateCode,
+    delta_bps: String(deltaBps),
+    est_delta_income: String(Math.round(delta)),
+    product: leadProduct,
+    name: leadName,
+    email: leadEmail,
+    phone: leadPhone,
+  });
+
+  const url = `${BOOKING_URL}?${params.toString()}`;
+  window.open(url, '_blank');
+  setLeadOpen(false);
+}}
+  className="gap-2"
+>
+  Continue to Booking <ArrowRight className="h-4 w-4" />
+</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+      <Dialog open={uiError.open} onOpenChange={(v) => setUiError((s) => ({ ...s, open: v }))}>
+  <DialogContent className="max-w-sm">
+    <DialogHeader>
+      <DialogTitle>Missing information</DialogTitle>
+      <DialogDescription>{uiError.message}</DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+      <Button onClick={() => setUiError({ open: false, message: "" })}>OK</Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+   </div>
+);
+}
 
   function addCD() {
     setCDs((rows) => [...rows, { balance: 50000, apy: STATE_PRESETS[stateCode].cd_1y, monthsToRenew: 12, passthrough: 0.7 }]);
