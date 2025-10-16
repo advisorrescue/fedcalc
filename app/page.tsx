@@ -56,28 +56,8 @@ interface FIAInput { amount: number; cap: number; par: number; riderFee: number;
 interface SPIAInput { premium: number; age: number; payoutFactor: number; include: boolean; }
 interface HELOCInput { balance: number; margin: number; include: boolean; }
 
-const ROF_MYGA_RATES = {
-  0: { 3: 0.0565, 5: 0.0600, 7: 0.0600, 10: 0.0600 },
-  1: { 3: 0.0555, 5: 0.0590, 7: 0.0590, 10: 0.0590 },
-  2: { 3: 0.0545, 5: 0.0580, 7: 0.0580, 10: 0.0580 },
-} as const;
-
-type MygaTerm = 3 | 5 | 7 | 10;
-
 export default function Page() {
-  const [stateCode, setStateCode] = useState<string>("FL");
-  const [myga, setMYGA] = useState<{ amount: number; rate: number; term: MygaTerm; include: boolean }>({
-  amount: 150000,
-  rate: ROF_MYGA_RATES[0][5],
-  term: 5,
-  include: true,
-});
-const [mygaRiders, setMygaRiders] = useState<0 | 1 | 2>(0);
-
-React.useEffect(() => {
-  setMYGA((s) => ({ ...s, rate: ROF_MYGA_RATES[mygaRiders][s.term] }));
-}, [mygaRiders, myga.term]);
-  
+  const [stateCode, setStateCode] = useState<string>("FL");  
   const [scenario, setScenario] = useState<ScenarioKey>("-50");
   const [customDeltaBps, setCustomDeltaBps] = useState<number>(-50);
   const [showReal, setShowReal] = useState<boolean>(false);
@@ -86,7 +66,6 @@ React.useEffect(() => {
   const [mm, setMM] = useState<MoneyMarketInput>({ balance: 250000, apy: STATE_PRESETS.FL.mm_apy, beta: 0.9, include: true });
   const [cds, setCDs] = useState<CDRow[]>([{ balance: 100000, apy: STATE_PRESETS.FL.cd_1y, monthsToRenew: 6, passthrough: 0.7 }]);
   const [bondFund, setBondFund] = useState<BondFundInput>({ value: 300000, secYield: 0.045, duration: 5, passthrough: 0.9, include: true });
-  const [myga, setMYGA] = useState<MYGAInput>({ amount: 150000, rate: STATE_PRESETS.FL.myga_5y, term: 5, include: true });
   const [fia, setFIA] = useState<FIAInput>({ amount: 200000, cap: STATE_PRESETS.FL.fia_cap, par: STATE_PRESETS.FL.fia_par, riderFee: 0.01, payoutFactor: 0.055, startAge: 65, include: true });
   const [spia, setSPIA] = useState<SPIAInput>({ premium: 150000, age: 65, payoutFactor: STATE_PRESETS.FL.spia_factor_65, include: false });
   const [heloc, setHELOC] = useState<HELOCInput>({ balance: 0, margin: 0.01, include: false });
